@@ -21,6 +21,10 @@ const Navbar = () => {
     setIsNavbarExpanded((prevExpanded) => !prevExpanded);
   };
 
+  const handleNavbarLinkClick = () => {
+    setIsNavbarExpanded(false);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navbarRef.current && !navbarRef.current.contains(event.target)) {
@@ -57,13 +61,23 @@ const Navbar = () => {
           <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav" ref={navbarRef}>
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
-                <Link className="nav-link active fs-5" aria-current="page" to="/" onClick={handleNavbarToggle}>
+                <Link
+                  className="nav-link active fs-5"
+                  aria-current="page"
+                  to="/"
+                  onClick={handleNavbarLinkClick}
+                >
                   Home
                 </Link>
               </li>
               {localStorage.getItem("authToken") && (
                 <li className="nav-item">
-                  <Link className="nav-link active fs-5" aria-current="page" to="/MyOrder" onClick={handleNavbarToggle}>
+                  <Link
+                    className="nav-link active fs-5"
+                    aria-current="page"
+                    to="/MyOrder"
+                    onClick={handleNavbarLinkClick}
+                  >
                     Orders
                   </Link>
                 </li>
@@ -71,11 +85,11 @@ const Navbar = () => {
             </ul>
             {!localStorage.getItem("authToken") ? (
               <div className="d-flex">
-                <Link className="btn bg-danger text-white m-1" to="/login" onClick={handleNavbarToggle}>
+                <Link className="btn bg-danger text-white m-1" to="/login" onClick={handleNavbarLinkClick}>
                   Login
                 </Link>
 
-                <Link className="btn bg-danger text-white m-1" to="/createuser" onClick={handleNavbarToggle}>
+                <Link className="btn bg-danger text-white m-1" to="/createuser" onClick={handleNavbarLinkClick}>
                   Sign Up
                 </Link>
               </div>
