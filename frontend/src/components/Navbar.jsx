@@ -5,6 +5,22 @@ import Cart from "../screens/Cart";
 import { useCart } from "./ContextReducer";
 import Badge from "react-bootstrap/Badge";
 
+const useOutsideClick = (ref, callback) => {
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      callback();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [ref, callback]);
+};
+
 const Navbar = () => {
   const [cartView, setCartView] = useState(false);
   const data = useCart();
@@ -25,19 +41,11 @@ const Navbar = () => {
     setIsNavbarExpanded(false);
   };
 
-  const handleDocumentClick = (event) => {
-    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
-      setIsNavbarExpanded(false);
-    }
+  const handleOutsideClick = () => {
+    setIsNavbarExpanded(false);
   };
 
-  useEffect(() => {
-    document.addEventListener("click", handleDocumentClick);
-
-    return () => {
-      document.removeEventListener("click", handleDocumentClick);
-    };
-  }, []);
+  useOutsideClick(navbarRef, handleOutsideClick);
 
   return (
     <div>
