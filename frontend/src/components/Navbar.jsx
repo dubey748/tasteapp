@@ -1,21 +1,21 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Modal from '../Modal';
-import Cart from '../screens/Cart';
-import { useCart } from './ContextReducer';
+import Modal from "../Modal";
+import Cart from "../screens/Cart";
+import { useCart } from "./ContextReducer";
 
-import Badge from 'react-bootstrap/Badge'
+import Badge from "react-bootstrap/Badge";
+
 const Navbar = () => {
-  const [cartView, setCartView] = useState(false)
-  const data=useCart()
- 
-  const navigate=useNavigate();
- 
-  const handleLogout=(()=>{
-    localStorage.removeItem("authToken");
-    navigate('/login')
+  const [cartView, setCartView] = useState(false);
+  const data = useCart();
 
-  })
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    navigate("/login");
+  };
 
   return (
     <div>
@@ -28,7 +28,7 @@ const Navbar = () => {
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="/navbarNav"
+            data-bs-target="#navbarNav"
             aria-controls="navbarNav"
             aria-expanded="false"
             aria-label="Toggle navigation"
@@ -38,29 +38,19 @@ const Navbar = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
-                <Link
-                  className="nav-link active fs-5 "
-                  aria-current="page"
-                  to="/"
-                >
+                <Link className="nav-link active fs-5" aria-current="page" to="/">
                   Home
                 </Link>
               </li>
-              {localStorage.getItem("authToken") ? (
+              {localStorage.getItem("authToken") && (
                 <li className="nav-item">
-                  <Link
-                    className="nav-link active fs-5"
-                    aria-current="page"
-                    to="/MyOrder"
-                  >
+                  <Link className="nav-link active fs-5" aria-current="page" to="/MyOrder">
                     Orders
                   </Link>
                 </li>
-              ) : (
-                ""
               )}
             </ul>
-            {(!localStorage.getItem("authToken")) ? (
+            {!localStorage.getItem("authToken") ? (
               <div className="d-flex">
                 <Link className="btn bg-danger text-white m-1" to="/login">
                   Login
@@ -72,14 +62,22 @@ const Navbar = () => {
               </div>
             ) : (
               <div>
-              <div className="btn bg-danger text-white m-1"  onClick={()=>{setCartView(true)}}>Cart {" "}
-              <Badge pill bg="white" text="black">{data.length}</Badge>
+                <div className="btn bg-danger text-white m-1" onClick={() => setCartView(true)}>
+                  Cart{" "}
+                  <Badge pill bg="white" text="black">
+                    {data.length}
+                  </Badge>
+                </div>
+                {cartView && (
+                  <Modal onClose={() => setCartView(false)}>
+                    <Cart />
+                  </Modal>
+                )}
+
+                <div className="btn bg-danger text-white m-1" onClick={handleLogout}>
+                  Log out
+                </div>
               </div>
-              {cartView ? <Modal onClose={() => setCartView(false)}><Cart/> </Modal> : ""}
-            
-              <div className="btn bg-danger text-white m-1" onClick={handleLogout}>Log out</div>
-              </div>
-            
             )}
           </div>
         </div>
