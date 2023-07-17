@@ -18,7 +18,7 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    setIsNavbarOpen((prevOpen) => !prevOpen);
+    setIsNavbarOpen(!isNavbarOpen);
   };
 
   useEffect(() => {
