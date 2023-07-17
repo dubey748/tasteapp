@@ -10,6 +10,7 @@ const Navbar = () => {
   const data = useCart();
   const navigate = useNavigate();
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const [isDelayedToggle, setIsDelayedToggle] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -17,17 +18,18 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    setIsNavbarExpanded((prevExpanded) => !prevExpanded);
+    setIsDelayedToggle(true);
   };
 
   const handleNavbarLinkClick = () => {
+    setIsDelayedToggle(false);
     setIsNavbarExpanded(false);
   };
 
-  const handleDocumentClick = (event) => {
-    if (!event.target.closest(".navbar")) {
-      setIsNavbarExpanded(false);
-    }
+  const handleDocumentClick = () => {
+    if (isDelayedToggle) return;
+
+    setIsNavbarExpanded(false);
   };
 
   useEffect(() => {
@@ -37,6 +39,14 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (isDelayedToggle) {
+      setTimeout(() => {
+        setIsNavbarExpanded((prevState) => !prevState);
+      }, 0);
+    }
+  }, [isDelayedToggle]);
 
   return (
     <div>
