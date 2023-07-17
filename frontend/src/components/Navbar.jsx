@@ -18,7 +18,7 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    setIsNavbarExpanded(!isNavbarExpanded);
+    setIsNavbarExpanded((prevExpanded) => !prevExpanded);
   };
 
   useEffect(() => {
