@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -9,7 +9,7 @@ const Navbar = () => {
   const [cartView, setCartView] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
-  const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
+  const navbarRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -17,15 +17,17 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    setIsNavbarExpanded((prevState) => !prevState);
+    const navbar = navbarRef.current;
+    if (navbar) {
+      navbar.classList.toggle("show");
+    }
   };
 
   const handleNavbarLinkClick = () => {
-    setIsNavbarExpanded(false);
-  };
-
-  const handleOutsideClick = () => {
-    setIsNavbarExpanded(false);
+    const navbar = navbarRef.current;
+    if (navbar) {
+      navbar.classList.remove("show");
+    }
   };
 
   return (
@@ -36,18 +38,18 @@ const Navbar = () => {
             Taste
           </Link>
           <button
-            className={`navbar-toggler ${isNavbarExpanded ? "" : "collapsed"}`}
+            className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
-            aria-expanded={isNavbarExpanded}
+            aria-expanded="false"
             aria-label="Toggle navigation"
             onClick={handleNavbarToggle}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav">
+          <div className="collapse navbar-collapse" id="navbarNav" ref={navbarRef}>
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link
