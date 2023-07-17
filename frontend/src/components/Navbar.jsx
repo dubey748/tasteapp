@@ -22,9 +22,8 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const navbar = navbarRef.current;
     const handleClickOutside = (event) => {
-      if (navbar && !navbar.contains(event.target)) {
+      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
         setIsNavbarExpanded(false);
       }
     };
@@ -44,7 +43,7 @@ const Navbar = () => {
             Taste
           </Link>
           <button
-            className={`navbar-toggler ${isNavbarExpanded ? "collapsed" : ""}`}
+            className={`navbar-toggler ${isNavbarExpanded ? "" : "collapsed"}`}
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
