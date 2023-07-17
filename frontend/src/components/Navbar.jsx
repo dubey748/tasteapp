@@ -95,7 +95,7 @@ const Navbar = () => {
               </div>
             ) : (
               <div>
-                <div className="btn bg-danger text-white m-1" onClick={() => setCartView(true)}>
+                <div className="btn bg-danger text-white m-1" onClick={() => setCartView(!cartView)}>
                   Cart{" "}
                   <Badge pill bg="white" text="black">
                     {data.length}
