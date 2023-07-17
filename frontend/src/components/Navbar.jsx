@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -9,7 +9,7 @@ const Navbar = () => {
   const [cartView, setCartView] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
-  const navbarRef = useRef(null);
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -17,43 +17,12 @@ const Navbar = () => {
   };
 
   const handleNavbarLinkClick = () => {
-    closeNavbar();
+    setIsNavbarOpen(false);
   };
 
   const handleNavbarToggle = () => {
-    const navbar = navbarRef.current;
-    const isOpen = navbar.classList.contains("show");
-    if (isOpen) {
-      closeNavbar();
-    } else {
-      openNavbar();
-    }
+    setIsNavbarOpen((prevOpen) => !prevOpen);
   };
-
-  const openNavbar = () => {
-    const navbar = navbarRef.current;
-    navbar.classList.add("show");
-    document.addEventListener("click", handleOutsideClick);
-  };
-
-  const closeNavbar = () => {
-    const navbar = navbarRef.current;
-    navbar.classList.remove("show");
-    document.removeEventListener("click", handleOutsideClick);
-  };
-
-  const handleOutsideClick = (event) => {
-    const navbar = navbarRef.current;
-    if (!navbar.contains(event.target)) {
-      closeNavbar();
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      document.removeEventListener("click", handleOutsideClick);
-    };
-  }, []);
 
   return (
     <div>
@@ -63,37 +32,27 @@ const Navbar = () => {
             Taste
           </Link>
           <button
-            className="navbar-toggler"
+            className={`navbar-toggler ${isNavbarOpen ? "" : "collapsed"}`}
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
-            aria-expanded="false"
+            aria-expanded={isNavbarOpen}
             aria-label="Toggle navigation"
             onClick={handleNavbarToggle}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav" ref={navbarRef}>
+          <div className={`collapse navbar-collapse ${isNavbarOpen ? "show" : ""}`} id="navbarNav">
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
-                <Link
-                  className="nav-link active fs-5"
-                  aria-current="page"
-                  to="/"
-                  onClick={handleNavbarLinkClick}
-                >
+                <Link className="nav-link active fs-5" aria-current="page" to="/" onClick={handleNavbarLinkClick}>
                   Home
                 </Link>
               </li>
               {localStorage.getItem("authToken") && (
                 <li className="nav-item">
-                  <Link
-                    className="nav-link active fs-5"
-                    aria-current="page"
-                    to="/MyOrder"
-                    onClick={handleNavbarLinkClick}
-                  >
+                  <Link className="nav-link active fs-5" aria-current="page" to="/MyOrder" onClick={handleNavbarLinkClick}>
                     Orders
                   </Link>
                 </li>
@@ -104,14 +63,13 @@ const Navbar = () => {
                 <Link className="btn bg-danger text-white m-1" to="/login" onClick={handleNavbarLinkClick}>
                   Login
                 </Link>
-
                 <Link className="btn bg-danger text-white m-1" to="/createuser" onClick={handleNavbarLinkClick}>
                   Sign Up
                 </Link>
               </div>
             ) : (
               <div>
-                <div className="btn bg-danger text-white m-1" onClick={() => setCartView(!cartView)}>
+                <div className="btn bg-danger text-white m-1" onClick={() => setCartView(true)}>
                   Cart{" "}
                   <Badge pill bg="white" text="black">
                     {data.length}
@@ -122,7 +80,6 @@ const Navbar = () => {
                     <Cart />
                   </Modal>
                 )}
-
                 <div className="btn bg-danger text-white m-1" onClick={handleLogout}>
                   Log out
                 </div>
