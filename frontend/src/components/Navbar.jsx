@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -10,7 +10,6 @@ const Navbar = () => {
   const data = useCart();
   const navigate = useNavigate();
   const navbarRef = useRef(null);
-  const isNavbarOpenRef = useRef(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -18,19 +17,13 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    isNavbarOpenRef.current = !isNavbarOpenRef.current;
-    forceUpdate();
-  };
-
-  const forceUpdate = () => {
-    setCartView((prevState) => !prevState);
+    setCartView((prevView) => !prevView);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (navbarRef.current && !navbarRef.current.contains(event.target)) {
-        isNavbarOpenRef.current = false;
-        forceUpdate();
+        setCartView(false);
       }
     };
 
@@ -49,22 +42,18 @@ const Navbar = () => {
             Taste
           </Link>
           <button
-            className={`navbar-toggler ${isNavbarOpenRef.current ? "" : "collapsed"}`}
+            className={`navbar-toggler ${cartView ? "" : "collapsed"}`}
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
-            aria-expanded={isNavbarOpenRef.current ? "true" : "false"}
+            aria-expanded={cartView ? "true" : "false"}
             aria-label="Toggle navigation"
             onClick={handleNavbarToggle}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div
-            className={`collapse navbar-collapse ${isNavbarOpenRef.current ? "show" : ""}`}
-            id="navbarNav"
-            ref={navbarRef}
-          >
+          <div className={`collapse navbar-collapse ${cartView ? "show" : ""}`} id="navbarNav" ref={navbarRef}>
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link className="nav-link active fs-5" aria-current="page" to="/">
