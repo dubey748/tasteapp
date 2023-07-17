@@ -25,13 +25,13 @@ const Navbar = () => {
     setIsNavbarExpanded(false);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (navbarRef.current && !navbarRef.current.contains(event.target)) {
-        setIsNavbarExpanded(false);
-      }
-    };
+  const handleClickOutside = (event) => {
+    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+      setIsNavbarExpanded(false);
+    }
+  };
 
+  useEffect(() => {
     document.addEventListener("click", handleClickOutside);
 
     return () => {
