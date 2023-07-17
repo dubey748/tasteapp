@@ -3,11 +3,15 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Card from "../components/Card";
 
+const Loader = () => {
+  return <div>Loading...</div>;
+};
 
 const Home = () => {
   const [foodCat, setFoodCat] = useState([]);
   const [foodItem, setFoodItem] = useState([]);
   const [search, setSearch] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const loadData = async () => {
     let response = await fetch("https://tastebackend.onrender.com/api/foodData", {
       method: "POST",
@@ -19,6 +23,7 @@ const Home = () => {
     //console.log(response);
     setFoodItem(response[0]);
     setFoodCat(response[1]);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -87,10 +92,7 @@ const Home = () => {
             data-bs-target="#carouselExampleFade"
             data-bs-slide="prev"
           >
-            <span
-              className="carousel-control-prev-icon"
-              aria-hidden="true"
-            ></span>
+            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Previous</span>
           </button>
           <button
@@ -99,54 +101,52 @@ const Home = () => {
             data-bs-target="#carouselExampleFade"
             data-bs-slide="next"
           >
-            <span
-              className="carousel-control-next-icon"
-              aria-hidden="true"
-            ></span>
+            <span className="carousel-control-next-icon" aria-hidden="true"></span>
             <span className="visually-hidden">Next</span>
           </button>
         </div>
       </div>
-      <div className="container">
-        {foodCat !== []
-          ? foodCat.map((data) => {
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="container">
+          {foodCat !== [] ? (
+            foodCat.map((data) => {
               return (
-                <div className="row mb-3">
-                  <div key={data._id} className="fs-3 m-3">
-                    {data.CategoryName}
-                  </div>
-
+                <div className="row mb-3" key={data._id}>
+                  <div className="fs-3 m-3">{data.CategoryName}</div>
                   <hr />
-                  {foodItem !== []
-                    ? foodItem
-                        .filter(
-                          (item) =>
-                            item.CategoryName === data.CategoryName &&
-                            item.name
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
-                        )
-                        .map((filterItems) => {
-                          return (
-                            <div
-                              key={filterItems._id}
-                              className="col-12 col-md-6 col-lg-4"
-                            >
-                              <Card
-                                foodItem={filterItems}
-                                options={filterItems.options[0]}
-                                
-                              />
-                            </div>
-                          );
-                        })
-                    : "<div>No Such Data Found<div/>"}
+                  {foodItem !== [] ? (
+                    foodItem
+                      .filter(
+                        (item) =>
+                          item.CategoryName === data.CategoryName &&
+                          item.name.toLowerCase().includes(search.toLowerCase())
+                      )
+                      .map((filterItems) => {
+                        return (
+                          <div
+                            key={filterItems._id}
+                            className="col-12 col-md-6 col-lg-4"
+                          >
+                            <Card
+                              foodItem={filterItems}
+                              options={filterItems.options[0]}
+                            />
+                          </div>
+                        );
+                      })
+                  ) : (
+                    <div>No Such Data Found</div>
+                  )}
                 </div>
               );
             })
-          : ""}
-      </div>
-
+          ) : (
+            ""
+          )}
+        </div>
+      )}
       <div>
         <Footer />
       </div>
