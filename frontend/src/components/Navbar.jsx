@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -9,8 +9,8 @@ const Navbar = () => {
   const [cartView, setCartView] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
+  const navbarRef = useRef(null);
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
-  const [isDelayedToggle, setIsDelayedToggle] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -18,18 +18,17 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    setIsDelayedToggle(true);
+    setIsNavbarExpanded((prevState) => !prevState);
   };
 
   const handleNavbarLinkClick = () => {
-    setIsDelayedToggle(false);
     setIsNavbarExpanded(false);
   };
 
-  const handleDocumentClick = () => {
-    if (isDelayedToggle) return;
-
-    setIsNavbarExpanded(false);
+  const handleDocumentClick = (event) => {
+    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+      setIsNavbarExpanded(false);
+    }
   };
 
   useEffect(() => {
@@ -39,14 +38,6 @@ const Navbar = () => {
       document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
-
-  useEffect(() => {
-    if (isDelayedToggle) {
-      setTimeout(() => {
-        setIsNavbarExpanded((prevState) => !prevState);
-      }, 0);
-    }
-  }, [isDelayedToggle]);
 
   return (
     <div>
@@ -67,7 +58,7 @@ const Navbar = () => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav">
+          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav" ref={navbarRef}>
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link
