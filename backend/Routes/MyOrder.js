@@ -10,9 +10,6 @@ router.post('/MyOrder', async (req, res) => {
     } catch (error) {
         res.send("Error",error.message)
     }
-    
-
 });
-
 module.exports = router
 
