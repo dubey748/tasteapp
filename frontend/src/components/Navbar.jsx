@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -7,9 +7,9 @@ import Badge from "react-bootstrap/Badge";
 
 const Navbar = () => {
   const [cartView, setCartView] = useState(false);
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
-  const navbarRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -17,17 +17,11 @@ const Navbar = () => {
   };
 
   const handleNavbarToggle = () => {
-    const navbar = navbarRef.current;
-    if (navbar) {
-      navbar.classList.toggle("show");
-    }
+    setIsNavbarOpen((prevOpen) => !prevOpen);
   };
 
   const handleNavbarLinkClick = () => {
-    const navbar = navbarRef.current;
-    if (navbar) {
-      navbar.classList.remove("show");
-    }
+    setIsNavbarOpen(false);
   };
 
   return (
@@ -38,18 +32,18 @@ const Navbar = () => {
             Taste
           </Link>
           <button
-            className="navbar-toggler"
+            className={`navbar-toggler ${isNavbarOpen ? "collapsed" : ""}`}
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
-            aria-expanded="false"
+            aria-expanded={isNavbarOpen}
             aria-label="Toggle navigation"
             onClick={handleNavbarToggle}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav" ref={navbarRef}>
+          <div className={`collapse navbar-collapse ${isNavbarOpen ? "show" : ""}`} id="navbarNav">
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link
