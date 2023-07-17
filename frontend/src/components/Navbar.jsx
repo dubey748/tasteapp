@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -9,7 +9,6 @@ const Navbar = () => {
   const [cartView, setCartView] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
-  const navbarRef = useRef(null);
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
 
   const handleLogout = () => {
@@ -25,17 +24,17 @@ const Navbar = () => {
     setIsNavbarExpanded(false);
   };
 
-  const handleClickOutside = (event) => {
-    if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+  const handleDocumentClick = (event) => {
+    if (!event.target.closest(".navbar")) {
       setIsNavbarExpanded(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("click", handleDocumentClick);
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("click", handleDocumentClick);
     };
   }, []);
 
@@ -58,7 +57,7 @@ const Navbar = () => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav" ref={navbarRef}>
+          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav">
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link
