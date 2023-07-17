@@ -1,31 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
 import { useCart } from "./ContextReducer";
 import Badge from "react-bootstrap/Badge";
 
-const useOutsideClick = (ref, callback) => {
-  const handleClickOutside = (event) => {
-    if (ref.current && !ref.current.contains(event.target)) {
-      callback();
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [ref, callback]);
-};
-
 const Navbar = () => {
   const [cartView, setCartView] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
-  const navbarRef = useRef(null);
   const [isNavbarExpanded, setIsNavbarExpanded] = useState(false);
 
   const handleLogout = () => {
@@ -44,8 +27,6 @@ const Navbar = () => {
   const handleOutsideClick = () => {
     setIsNavbarExpanded(false);
   };
-
-  useOutsideClick(navbarRef, handleOutsideClick);
 
   return (
     <div>
@@ -66,7 +47,7 @@ const Navbar = () => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav" ref={navbarRef}>
+          <div className={`collapse navbar-collapse ${isNavbarExpanded ? "show" : ""}`} id="navbarNav">
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link
