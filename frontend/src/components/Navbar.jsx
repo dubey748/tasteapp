@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../Modal";
 import Cart from "../screens/Cart";
@@ -7,22 +7,53 @@ import Badge from "react-bootstrap/Badge";
 
 const Navbar = () => {
   const [cartView, setCartView] = useState(false);
-  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const data = useCart();
   const navigate = useNavigate();
+  const navbarRef = useRef(null);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     navigate("/login");
   };
 
-  const handleNavbarToggle = () => {
-    setIsNavbarOpen((prevOpen) => !prevOpen);
+  const handleNavbarLinkClick = () => {
+    closeNavbar();
   };
 
-  const handleNavbarLinkClick = () => {
-    setIsNavbarOpen(false);
+  const handleNavbarToggle = () => {
+    const navbar = navbarRef.current;
+    const isOpen = navbar.classList.contains("show");
+    if (isOpen) {
+      closeNavbar();
+    } else {
+      openNavbar();
+    }
   };
+
+  const openNavbar = () => {
+    const navbar = navbarRef.current;
+    navbar.classList.add("show");
+    document.addEventListener("click", handleOutsideClick);
+  };
+
+  const closeNavbar = () => {
+    const navbar = navbarRef.current;
+    navbar.classList.remove("show");
+    document.removeEventListener("click", handleOutsideClick);
+  };
+
+  const handleOutsideClick = (event) => {
+    const navbar = navbarRef.current;
+    if (!navbar.contains(event.target)) {
+      closeNavbar();
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  }, []);
 
   return (
     <div>
@@ -32,18 +63,18 @@ const Navbar = () => {
             Taste
           </Link>
           <button
-            className={`navbar-toggler ${isNavbarOpen ? "collapsed" : ""}`}
+            className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
             aria-controls="navbarNav"
-            aria-expanded={isNavbarOpen}
+            aria-expanded="false"
             aria-label="Toggle navigation"
             onClick={handleNavbarToggle}
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className={`collapse navbar-collapse ${isNavbarOpen ? "show" : ""}`} id="navbarNav">
+          <div className="collapse navbar-collapse" id="navbarNav" ref={navbarRef}>
             <ul className="navbar-nav me-auto mb-2">
               <li className="nav-item">
                 <Link
