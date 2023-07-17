@@ -1,18 +1,19 @@
-import React from "react";
-/* import DeleteIcon from '@mui/icons-material/Delete'; */
+import React, { useState, useEffect } from "react";
 import { useCart, useDispatchCart } from "../components/ContextReducer";
+
+const Loader = () => {
+  return <div>Loading...</div>;
+};
+
 export default function Cart() {
-  let data = useCart();
-  let dispatch = useDispatchCart();
-  if (data.length === 0) {
-    return (
-      <div>
-        <div className="m-5 w-100 text-center fs-3 text-white">
-          The Cart is Empty!
-        </div>
-      </div>
-    );
-  }
+  const [isLoading, setIsLoading] = useState(true);
+  const data = useCart();
+  const dispatch = useDispatchCart();
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   const handleRemove = (index) => {
     console.log(index);
     dispatch({ type: "REMOVE", index: index });
@@ -40,6 +41,21 @@ export default function Cart() {
   };
 
   let totalPrice = data.reduce((total, food) => total + food.price, 0);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (data.length === 0) {
+    return (
+      <div>
+        <div className="m-5 w-100 text-center fs-3 text-white">
+          The Cart is Empty!
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="text-white">
       {console.log(data)}
